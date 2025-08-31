@@ -111,6 +111,8 @@ pub enum Message {
     OpenFile(String, FileInfo, fn(String) -> Message),
     /// Toggle export pcap file
     ToggleExportPcap,
+    /// Toggle compact window view, hide footer and show minimal header
+    ToggleCompactView,
     /// The output PCAP directory has been updated
     OutputPcapDir(String),
     /// The output PCAP file name has been updated

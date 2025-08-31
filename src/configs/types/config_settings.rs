@@ -14,6 +14,7 @@ use crate::{SNIFFNET_LOWERCASE, location};
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct ConfigSettings {
     pub color_gradient: GradientType,
+    pub compact_view: bool,
     pub language: Language,
     pub scale_factor: f64,
     pub mmdb_country: String,
@@ -52,6 +53,7 @@ impl Default for ConfigSettings {
     fn default() -> Self {
         ConfigSettings {
             color_gradient: GradientType::default(),
+            compact_view: false,
             language: Language::default(),
             scale_factor: 1.0,
             mmdb_country: String::new(),

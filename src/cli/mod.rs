@@ -88,6 +88,7 @@ mod tests {
         let modified_configs = Configs {
             settings: ConfigSettings {
                 color_gradient: GradientType::Wild,
+                compact_view: false,
                 language: Language::ZH,
                 scale_factor: 0.65,
                 mmdb_country: "countrymmdb".to_string(),

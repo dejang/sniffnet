@@ -561,6 +561,9 @@ impl Sniffer {
                     n.expand(expand);
                 }
             }
+            Message::ToggleCompactView => {
+                self.configs.settings.compact_view = !self.configs.settings.compact_view;
+            }
         }
         Task::none()
     }
@@ -588,18 +591,23 @@ impl Sniffer {
             }
         };
 
-        let footer = footer(
-            self.thumbnail,
-            language,
-            color_gradient,
-            font,
-            font_headers,
-            self.newer_release_available,
-            self.dots_pulse.1,
-        );
+        let mut content = Column::new().push(header).push(body);
 
-        let content: Element<Message, StyleType> =
-            Column::new().push(header).push(body).push(footer).into();
+        if self.configs.settings.compact_view == false {
+            let footer = footer(
+                self.thumbnail,
+                language,
+                color_gradient,
+                font,
+                font_headers,
+                self.newer_release_available,
+                self.dots_pulse.1,
+            );
+
+            content = content.push(footer);
+        }
+
+        let content = content.into();
 
         match self.modal.clone() {
             None => {
@@ -1904,6 +1912,7 @@ mod tests {
             settings_start,
             ConfigSettings {
                 color_gradient: GradientType::None,
+                compact_view: false,
                 language: Language::EN,
                 scale_factor: 1.0,
                 mmdb_country: "".to_string(),
@@ -1930,6 +1939,7 @@ mod tests {
         )));
         sniffer.update(Message::Style(StyleType::Custom(ExtraStyles::DraculaDark)));
         sniffer.update(Message::ChangeVolume(100));
+        sniffer.update(Message::ToggleCompactView);
 
         // quit the app by sending a CloseRequested message
         sniffer.update(Message::Quit);
@@ -1942,6 +1952,7 @@ mod tests {
             settings_end,
             ConfigSettings {
                 color_gradient: GradientType::Wild,
+                compact_view: true,
                 language: Language::ZH,
                 scale_factor: 1.0,
                 mmdb_country: "countrymmdb".to_string(),

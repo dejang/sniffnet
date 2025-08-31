@@ -1,7 +1,7 @@
 use iced::widget::text::LineHeight;
 use iced::widget::tooltip::Position;
 use iced::widget::{
-    Column, Container, PickList, Row, Rule, Slider, Space, Text, Tooltip, button, vertical_space,
+    button, vertical_space, Checkbox, Column, Container, PickList, Row, Rule, Slider, Space, Text, Tooltip
 };
 use iced::{Alignment, Font, Length, Padding};
 
@@ -58,6 +58,7 @@ pub fn settings_general_page(sniffer: &Sniffer) -> Container<Message, StyleType>
 
 fn column_all_general_setting(sniffer: &Sniffer, font: Font) -> Column<Message, StyleType> {
     let ConfigSettings {
+        compact_view,
         language,
         scale_factor,
         mmdb_country,
@@ -70,7 +71,7 @@ fn column_all_general_setting(sniffer: &Sniffer, font: Font) -> Column<Message, 
     let mut column = Column::new()
         .align_x(Alignment::Center)
         .padding([5, 10])
-        .push(row_language_scale_factor(language, font, scale_factor))
+        .push(interface_settings(language, font, scale_factor, compact_view))
         .push(Rule::horizontal(25));
 
     if !is_editable {
@@ -95,10 +96,11 @@ fn column_all_general_setting(sniffer: &Sniffer, font: Font) -> Column<Message, 
     column
 }
 
-fn row_language_scale_factor<'a>(
+fn interface_settings<'a>(
     language: Language,
     font: Font,
     scale_factor: f64,
+    is_compact_view: bool
 ) -> Row<'a, Message, StyleType> {
     Row::new()
         .align_y(Alignment::Start)
@@ -106,6 +108,8 @@ fn row_language_scale_factor<'a>(
         .push(language_picklist(language, font))
         .push(Rule::vertical(25))
         .push(scale_factor_slider(language, font, scale_factor))
+        .push(Rule::vertical(25))
+        .push(toggle_compact_view_column(language, font, is_compact_view))
         .push(Rule::vertical(25))
         .push(need_help(language, font))
 }
@@ -238,6 +242,12 @@ fn need_help<'a>(language: Language, font: Font) -> Container<'a, Message, Style
         .width(Length::Fill)
         .align_x(Alignment::Center)
         .align_y(Alignment::Center)
+}
+
+fn toggle_compact_view_column<'a>(language: Language, font: Font, is_compact_view: bool) -> Column<'a, Message, StyleType> {
+    let toggler_cta = Checkbox::new("", is_compact_view).on_toggle(|_| Message::ToggleCompactView);
+    let col = Column::new().push(Text::new("Toggle Compact View")).push(toggler_cta).align_x(Alignment::Center);
+    col
 }
 
 fn mmdb_settings<'a>(
